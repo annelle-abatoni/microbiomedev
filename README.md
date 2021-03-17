@@ -1,3 +1,3 @@
 # Microbiome.jl Development
 
-Author: Annelle
+Author: Annelle Abatoni Kayisire
