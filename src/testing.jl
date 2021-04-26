@@ -1,10 +1,12 @@
 using Pkg
 Pkg.activate(@__DIR__)
+Pkg.add("Dictionaries")
 
 using DataFrames
 using CSV
 using Microbiome
 using SparseArrays
+using Dictionaries
 
 p1 = CSV.read("profiles/C0043-7F-1A_S14_profile.tsv", DataFrame, delim='\t',
     header=["taxon", "taxid", "abundance", "additional"], datarow = 5)
@@ -48,7 +50,7 @@ function findClass(stringTaxon)
         end
     end
 end
-
+## DOESN'T WORK BECAUSE Taxon type WAS String instead ##
 
 a = split("k__Bacteria|p__Firmicutes|c__Clo","|")
 
@@ -87,5 +89,22 @@ function findClade(stringTaxon, desiredClade) #input desiredClade eg. kingdom, p
     end
 end
 
+using Dictionaries
 
-using Tests
+ms = MicrobiomeSample("sample1", Dictionary([:gender, :age], ["female", 180]))
+
+hasclade(t::Taxon)::Bool
+hasclade("k__Bacteria"::kingdom)::True #?
+
+
+function findClade(stringTaxon, desiredClade) #input desiredClade eg. kingdom, phylum class
+#    desiredClade = lowercase(desiredClade)
+    splitStr = split(stringTaxon,"|")   
+    println(msStr.name)
+    Taxon(name::msStr.name) #?
+    # for element in msStr.name
+    #     if element[1] == desiredClade[1];
+    #         return println("The " * desiredClade * " is " * element[4:end])
+    #     end
+    # end
+end
