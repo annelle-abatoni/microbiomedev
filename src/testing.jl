@@ -94,17 +94,19 @@ using Dictionaries
 ms = MicrobiomeSample("sample1", Dictionary([:gender, :age], ["female", 180]))
 
 hasclade(t::Taxon)::Bool
-hasclade("k__Bacteria"::kingdom)::True #?
+
+taxon_conversion = (k = :kingdom, p = :phylum, c = :class)
 
 
-function findClade(stringTaxon, desiredClade) #input desiredClade eg. kingdom, phylum class
-#    desiredClade = lowercase(desiredClade)
-    splitStr = split(stringTaxon,"|")   
-    println(msStr.name)
-    Taxon(name::msStr.name) #?
-    # for element in msStr.name
-    #     if element[1] == desiredClade[1];
-    #         return println("The " * desiredClade * " is " * element[4:end])
-    #     end
-    # end
+
+function findClade(str, desiredClade) 
+    splitStr = split(str, "|")
+    for elt in splitStr
+        lev_abr = Symbol(first(elt))
+        if desiredClade == taxon_conversion[lev_abr] 
+            #print(taxon_conversion[lev_abr])  
+            name = elt[4:end]
+            return(Taxon(name, taxon_conversion[lev_abr]))
+        end
+    end
 end
