@@ -96,3 +96,10 @@ function findClade(str, desiredClade)
         end
     end
 end
+
+#Using findClade() on DataFrames  
+function dataframeClade(table, desiredClade)
+    for i in size(table, 1)
+        println(findClade(table[i,1], desiredClade))
+    end
+end
