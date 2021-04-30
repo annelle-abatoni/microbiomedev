@@ -78,33 +78,19 @@ end
 
 # TO DO: find level, gets level (eg. class) as argument
 
-
-function findClade(stringTaxon, desiredClade) #input desiredClade eg. kingdom, phylum class
-    desiredClade = lowercase(desiredClade)
-    splitStr = split(stringTaxon,"|")   
-    for element in splitStr
-        if element[1] == desiredClade[1];
-            return println("The " * desiredClade * " is " * element[4:end])
-        end
-    end
-end
-
-using Dictionaries
-
-ms = MicrobiomeSample("sample1", Dictionary([:gender, :age], ["female", 180]))
-
-hasclade(t::Taxon)::Bool
-
-taxon_conversion = (k = :kingdom, p = :phylum, c = :class)
-
-
+taxon_conversion = (k = :kingdom, 
+                    p = :phylum, 
+                    c = :class,
+                    o = :order,
+                    f = :family,
+                    g = :genus,
+                    s = :species)
 
 function findClade(str, desiredClade) 
     splitStr = split(str, "|")
     for elt in splitStr
         lev_abr = Symbol(first(elt))
         if desiredClade == taxon_conversion[lev_abr] 
-            #print(taxon_conversion[lev_abr])  
             name = elt[4:end]
             return(Taxon(name, taxon_conversion[lev_abr]))
         end
