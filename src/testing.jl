@@ -39,19 +39,6 @@ cp = CommunityProfile(sparse(abund), taxa, samples)
 # TODO: make function that turns string, eg "k__Bacteria|p__Firmicutes|c__Clostridia"
 # into a `Taxon` type with correct name and clade, eg `Taxon("Clostricia, :class)`
 
-function findClass(stringTaxon) 
-    chompedStr = chomp(stringTaxon, head=12, tail=0)   
-    println(chompedStr)
-    for letters in chompedStr
-        if !occursin(chompedStr,"|c_")
-            println(letters * ": No class found")
-        else
-            println(letters * " : Found it!")
-        end
-    end
-end
-## DOESN'T WORK BECAUSE Taxon type WAS String instead ##
-
 a = split("k__Bacteria|p__Firmicutes|c__Clo","|")
 
 # anonymous function syntax: `arg -> func(arg)`
@@ -86,20 +73,38 @@ taxon_conversion = (k = :kingdom,
                     g = :genus,
                     s = :species)
 
-function findClade(str, desiredClade) 
+                    
+function _get_taxon(elt)
+           pieces = split(elt, "__")
+           length(pieces) == 2 || error("incorrectly formatted name string: $elt")
+           (lev, name) = pieces
+           lev_abr = Symbol(lev)
+           lev_abr in keys(taxon_conversion) || error("Invalid taxon abbreviation: $lev_abr in name $elt")
+           return Taxon(name, taxon_conversion[lev_abr])
+       end
+
+
+
+function findClade(str, desiredClade)
     splitStr = split(str, "|")
     for elt in splitStr
-        lev_abr = Symbol(first(elt))
-        if desiredClade == taxon_conversion[lev_abr] 
-            name = elt[4:end]
-            return(Taxon(name, taxon_conversion[lev_abr]))
+        t = _get_taxon(elt)
+
+        if desiredClade == clade(t)
+            return t
         end
     end
 end
 
-#Using findClade() on DataFrames  
-function dataframeClade(table, desiredClade)
-    for i in size(table, 1)
-        println(findClade(table[i,1], desiredClade))
-    end
-end
+# function findClade(str, desiredClade) 
+#     splitStr = split(str, "|")
+#     #add error if desiredclade
+#     for elt in splitStr
+#         lev_abr = Symbol(first(elt))
+#         if desiredClade == taxon_conversion[lev_abr] 
+#             name = elt[4:end]
+#             return(Taxon(name, taxon_conversion[lev_abr]))
+#         #else, return nothing if str doesn't contain desiredClade
+#         end
+#     end
+# end
