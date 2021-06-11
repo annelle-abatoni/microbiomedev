@@ -107,6 +107,7 @@ Samples can be instantiated with only a name, leaving the `metadata` `Dictionary
 ```jldoctest MicrobiomeSample
 julia> ms2 = MicrobiomeSample("sample2")
 MicrobiomeSample("sample2", {})
+
 ```
 
 Adding or changing metadata follows the same rules as for the normal `Dictionary` type.
@@ -184,6 +185,13 @@ Microbial taxon with a name and a clade that can be one of
 
 or `missing`. Contructors can also use numbers 0-9, or pass a string alone
 (in which case the `taxon` will be stored as `missing`)
+
+julia> t = Taxon("sample1", :kingdom)
+Taxon("sample1", :kingdom)
+
+julia> t = Taxon("sample1")
+Taxon("sample1", missing)
+
 """
 struct Taxon <: AbstractFeature
     name::String
@@ -205,6 +213,12 @@ Taxon(n::AbstractString) = Taxon(n, missing)
 
 Get the `clade` field from an `Taxon`.
 Returns `missing` if the clade is not set.
+
+julia> clade(Taxon("sample", :kingdom))
+:kingdom
+
+julia> clade(Taxon("sample"))
+missing
 """
 clade(t::Taxon) = t.clade
 clade(::Missing) = missing
@@ -233,6 +247,9 @@ hasclade(t::Taxon) = !ismissing(clade(t))
     GeneFunction(name::String, taxon::Union{Taxon, String, Missing}) <: AbstractFeature
     GeneFunction(name::String)
 
+    julia> t = GeneFunction("sample1", Taxon("subsample1", :kingdom))
+    GeneFunction("sample1", Taxon("subsample1", :kingdom))
+
 Microbial gene function object with optional stratification (`taxon`).
 """
 struct GeneFunction <: AbstractFeature
@@ -254,6 +271,17 @@ taxon(gf::GeneFunction) = gf.taxon
 """
     hastaxon(t::GeneFunction)::Bool
 
-Pretty self-explanatory.
-"""
+
+    julia> t = GeneFunction("sample1", Taxon("subsample1", :kingdom))
+    GeneFunction("sample1", Taxon("subsample1", :kingdom))
+
+    julia> hastaxon(t)
+    true
+    
+    julia> t = GeneFunction("sample1")
+    Taxon("sample1", missing)
+    
+    julia> hasclade(t)
+    false
+    """
 hastaxon(gf::GeneFunction) = !ismissing(taxon(gf))

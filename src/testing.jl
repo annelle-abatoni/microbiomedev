@@ -53,7 +53,7 @@ startswith_c(str) = startswith(str, "c")
 findfirst(startswith_c, a)
 
 # with annonymous function
-findfirst(str -> startswith(str, "c"), a)
+findfirst(astr -> startswith(str, "c"), a)
 
 # with do syntax
 findfirst(a) do str
@@ -65,7 +65,7 @@ end
 
 # TO DO: find level, gets level (eg. class) as argument
 
-taxon_conversion = (k = :kingdom, 
+const _taxon_conversion = (k = :kingdom, 
                     p = :phylum, 
                     c = :class,
                     o = :order,
